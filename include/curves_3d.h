@@ -10,52 +10,6 @@ struct Point3
     double x = 0.0, y = 0.0, z = 0.0;
 };
 
-
-enum CurveType
-{
-    ELIPSE,
-    CIRCLE,
-    HELIX
-};
-
-namespace ParametricFunctions
-{
-    double FlatFunction(double parameter, double radius)
-    {
-        return 0.0;
-    }
-
-    double CircleFunctionX(double parameter, double radius)
-    {
-        return radius * std::cos(parameter);
-    }
-
-    double CircleFunctionY(double parameter, double radius)
-    {
-        return radius * std::sin(parameter);
-    }
-
-    double HelixFunctionZ(double parameter, double step)
-    {
-        return (step * parameter)/(2*M_PI);
-    }
-
-    double CircleDerivationX(double parameter, double radius)
-    {
-        return (-radius * std::sin(parameter));
-    }
-
-    double CircleDerivationY(double parameter, double radius)
-    {
-        return (radius * std::cos(parameter));
-    }
-
-    double HelixDerivationZ(double parameter, double step)
-    {
-        return ((step)/(2*M_PI));
-    }
-}
-
 class Curve3D
 {
 public:
@@ -63,12 +17,10 @@ public:
     virtual Point3 getDerivateAt(double parameter) const = 0;
 
     Point3 getCenter() const;
-    CurveType getCurveType() const;
 
     void setCenter(Point3 center);
 
 protected:
-
     std::function<double(double parameter, double value)> x_function;
     std::function<double(double parameter, double value)> y_function;
     std::function<double(double parameter, double value)> z_function;
@@ -77,8 +29,15 @@ protected:
     std::function<double(double parameter, double value)> y_derivation;
     std::function<double(double parameter, double value)> z_derivation;
 
+    static double flatFunction(double parameter, double radius);
+    static double circleFunctionX(double parameter, double radius);
+    static double circleFunctionY(double parameter, double radius);
+    static double helixFunctionZ(double parameter, double step);
+    static double circleDerivationX(double parameter, double radius);
+    static double circleDerivationY(double parameter, double radius);
+    static double helixDerivationZ(double parameter, double step);
+
     Point3 center;
-    CurveType type;
 };
 
 
@@ -137,6 +96,7 @@ public:
     void setStep(double step);
 
 private:
+
     double radius, step;
 };
 

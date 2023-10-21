@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <random>
 
 
 #define MAX_CURVES 20
@@ -14,8 +15,8 @@
 #define Y_MAX 50
 #define Z_MIN -50
 #define Z_MAX 50
-#define RAD_MAX 100
-#define RAD_MIN 0.1
+#define RAD_MAX 100.0
+#define RAD_MIN -50.0
 #define STEP_MAX 10
 
 
@@ -29,7 +30,10 @@ Point3 generateCenter()
 
 double generateRadius()
 {
-    return (double)(rand()%(RAD_MAX)) + RAD_MIN;
+    std::random_device rd;
+    std::mt19937_64 gen{rd()};
+
+    return std::generate_canonical<double,10>(gen)*RAD_MAX;
 }
 
 double generateStep()
@@ -96,8 +100,8 @@ std::vector<std::shared_ptr<Curve3D>> generateVector()
     for (int i = 0; i < size; ++i)
     {
         std::shared_ptr<Curve3D> curve (makeRandomCurve());
-
-        if (curve->getCurveType() == CurveType::CIRCLE)
+        vector.emplace_back(curve);
+        if (dynamic_cast<Circle*>(curve.get()))
             ++circle_count;
     }
 
@@ -118,26 +122,51 @@ int main()
 
     std::vector<std::shared_ptr<Circle>> circles;
 
+    std::cout <<"Initial curve vector\n";
     int counter = 0;
     for (auto& curve : curves)
     {
         auto center = curve->getCenter();
-        std::printf("Curve #%d, center (%f1, %f1, %f1)\n", counter,center.x,center.y,center.z);
+        std::printf("Curve #%d, center \t\t(%.1f, %.1f, %.1f)\n", counter,center.x,center.y,center.z);
 
         auto point = curve->getCartesianAt(M_PI/4);
-        std::printf("Point at PI/4 : (%f1, %f1, %f1)\n", point.x, point.y, point.z);
+        std::printf("Point at PI/4 : \t\t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
 
         point = curve->getDerivateAt(M_PI/4);
-        std::printf("Point at PI/4 : (%f1, %f1, %f1)\n\n", point.x, point.y, point.z);
+        std::printf("Derivation at PI/4 : \t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
 
-        if (curve->getCurveType() == CurveType::CIRCLE)
+        if (dynamic_cast<Circle*>(curve.get()))
         {
-            std::shared_ptr<Circle> static_pointer_cast(std::shared_ptr<Curve3D>& curve);
-            std::shared_ptr<Circle> circle (static_cast<Circle*>(curve.get()));
-            circles.emplace_back(circle);
+            circles.emplace_back(std::dynamic_pointer_cast<Circle>(curve));
+            auto rad = circles.back()->getRadius();
+            std::printf("It is a circle with radius: \t%.1f\n", rad);
         }
-
+        ++counter;
+        std::cout << std::endl;
     }
 
+    counter = 0;
+    std::cout << "Vector of circles:\n";
+    for (auto& circle:circles)
+    {
+        std::cout << "Circle #" << counter << " radius = " << circle->getRadius() << std::endl;
+        ++counter;
+    }
 
+    std::sort(circles.begin(),circles.end(),[](std::shared_ptr<Circle> first, std::shared_ptr<Circle> second){
+            return first->getRadius()<second->getRadius();
+        });
+
+    std::cout <<"\nSorted vector of circles:\n";
+    counter = 0;
+    double radii_sum = 0.0;
+    for (auto& circle:circles)
+    {
+        std::cout << "Circle #" << counter << " radius = " << circle->getRadius() << std::endl;
+        radii_sum += circle->getRadius();
+        ++counter;
+    }
+    std::cout << "\nTotal radii sum = " << radii_sum << std::endl;
+
+    std::cin >> counter;
 }

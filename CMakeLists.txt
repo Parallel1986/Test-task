@@ -12,9 +12,3 @@ add_executable(Test-task
 	source/Elipse.cpp
 	source/Helix.cpp
 	source/curves_3d.cpp)
-
-include(GNUInstallDirs)
-install(TARGETS Test-task
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)

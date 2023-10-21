@@ -4,15 +4,14 @@ Circle::Circle()
 {
     this->center = {0.0, 0.0, 0.0};
     this->radius = 1.0;
-    this->type = CurveType::Circle;
 
-    this->x_function = ParametricFunctions::CircleFunctionX;
-    this->y_function = ParametricFunctions::CircleFunctionY;
-    this->z_function = ParametricFunctions::FlatFunction;
+    this->x_function = circleFunctionX;
+    this->y_function = circleFunctionY;
+    this->z_function = flatFunction;
 
-    this->x_derivation = ParametricFunctions::CircleDerivationX;
-    this->y_derivation = ParametricFunctions::CircleDerivationY;
-    this->z_derivation = ParametricFunctions::FlatFunction;
+    this->x_derivation = circleDerivationX;
+    this->y_derivation = circleDerivationY;
+    this->z_derivation = flatFunction;
 }
 
 Circle::Circle(Point3 center, double radius) : Circle()

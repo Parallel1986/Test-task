@@ -5,15 +5,14 @@ Helix::Helix()
     this->center = {0.0, 0.0, 0.0};
     this->radius = 1.0;
     this->step = 0.0;
-    this->type = CurveType::Helix;
 
-    this->x_function = ParametricFunctions::CircleFunctionX;
-    this->y_function = ParametricFunctions::CircleFunctionY;
-    this->z_function = ParametricFunctions::HelixFunctionZ;
+    this->x_function = circleFunctionX;
+    this->y_function = circleFunctionY;
+    this->z_function = helixFunctionZ;
 
-    this->x_derivation = ParametricFunctions::CircleDerivationX;
-    this->y_derivation = ParametricFunctions::CircleDerivationY;
-    this->z_derivation = ParametricFunctions::HelixDerivationZ;
+    this->x_derivation = circleDerivationX;
+    this->y_derivation = circleDerivationY;
+    this->z_derivation = helixDerivationZ;
 }
 
 Helix::Helix(Point3 center, double radius, double step) : Helix()
