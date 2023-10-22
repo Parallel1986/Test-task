@@ -153,6 +153,7 @@ void calculateTotalRadius(std::vector<std::shared_ptr<Circle>>& circles)
     std::printf("\nTotal radii sum = %.1f\n", radii_sum);
 }
 
+
 int main()
 {
     std::srand((unsigned int)std::time(nullptr));
@@ -177,6 +178,7 @@ int main()
         std::cout << std::endl;
     }
 
+    std::cout <<"\nUnsorted vector of circles:\n";
     printVectorOfCircles(circles);
 
     std::sort(circles.begin(),circles.end(),[](std::shared_ptr<Circle> first, std::shared_ptr<Circle> second){
