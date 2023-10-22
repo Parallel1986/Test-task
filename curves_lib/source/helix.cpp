@@ -18,7 +18,10 @@ Helix::Helix()
 Helix::Helix(Point3 center, double radius, double step) : Helix()
 {
     this->center = center;
-    this->radius = radius;
+    if (radius < 0)
+        this->radius = -1*radius;
+    else
+        this->radius = radius;
     this->step = step;
 }
 

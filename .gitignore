@@ -1,5 +1,8 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
+#Build folders
+build-curves_lib-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/
+build-curves_lib-Desktop_Qt_5_15_2_MinGW_64_bit-Debug
 
 *~
 *.autosave

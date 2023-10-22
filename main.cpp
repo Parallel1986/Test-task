@@ -1,11 +1,12 @@
-#include "include/curves_3d.h"
+#include "include_lib/curves_3d.h"
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <ctime>
 #include <random>
-
+#include <memory>
+#include <exception>
 
 #define MAX_CURVES 20
 #define MIN_CURVES 5
@@ -17,6 +18,7 @@
 #define Z_MAX 50
 #define RAD_MAX 100.0
 #define RAD_MIN -50.0
+#define RAD_SIGNS_BELOW_ZERO 2
 #define STEP_MAX 10
 
 
@@ -30,10 +32,8 @@ Point3 generateCenter()
 
 double generateRadius()
 {
-    std::random_device rd;
-    std::mt19937_64 gen{rd()};
-
-    return std::generate_canonical<double,10>(gen)*RAD_MAX;
+    return ((rand()%(int)(RAD_MAX*pow(10,RAD_SIGNS_BELOW_ZERO)))
+            /pow(10,RAD_SIGNS_BELOW_ZERO))+RAD_MIN;
 }
 
 double generateStep()
@@ -84,8 +84,8 @@ std::shared_ptr<Curve3D> makeRandomCurve()
         return(std::shared_ptr<Curve3D>(generateHelix()));
 
     //Shouldn't get here
-    default:
-        throw (std::exception("makeRandomCurve(): unknown curve"));
+    default:        
+        throw (std::runtime_error("makeRandomCurve(): unknown curve"));
         break;
         }
 }
@@ -114,26 +114,31 @@ std::vector<std::shared_ptr<Curve3D>> generateVector()
     return vector;
 }
 
+void printCurveInfo(const Curve3D* curve)
+{
+    auto center = curve->getCenter();
+        std::printf("Center \t\t(%.1f, %.1f, %.1f)\n", center.x,center.y,center.z);
+
+        auto point = curve->getCartesianAt(M_PI/4);
+        std::printf("Point at PI/4 : \t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
+
+        point = curve->getDerivateAt(M_PI/4);
+        std::printf("Derivation at PI/4: (%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
+}
+
 int main()
 {
-    std::srand(std::time(nullptr));
+    std::srand((unsigned int)std::time(nullptr));
 
     std::vector<std::shared_ptr<Curve3D>> curves (generateVector());
-
     std::vector<std::shared_ptr<Circle>> circles;
 
     std::cout <<"Initial curve vector\n";
     int counter = 0;
     for (auto& curve : curves)
     {
-        auto center = curve->getCenter();
-        std::printf("Curve #%d, center \t\t(%.1f, %.1f, %.1f)\n", counter,center.x,center.y,center.z);
-
-        auto point = curve->getCartesianAt(M_PI/4);
-        std::printf("Point at PI/4 : \t\t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
-
-        point = curve->getDerivateAt(M_PI/4);
-        std::printf("Derivation at PI/4 : \t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
+        std::cout << "Curve #" << counter << std::endl;
+        printCurveInfo(curve.get());
 
         if (dynamic_cast<Circle*>(curve.get()))
         {

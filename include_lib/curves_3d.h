@@ -1,16 +1,28 @@
 #ifndef CURVES_3D_H
 #define CURVES_3D_H
+
+#if defined(_WIN32) || defined(_WIN64)
+
+	#define MYLIB_EXPORT __declspec(dllexport)
+	#define MYLIB_IMPORT __declspec(dllimport)
+	
+#else
+	#define MYLIB_EXPORT __attribute__((visibility("default")))
+	#define MYLIB_IMPORT __attribute__((visibility("default")))
+	#define MYLIB_HIDDEN __attribute__((visibility("hidden")))
+#endif
+
 #include <cmath>
 #include <functional>
 
 #define M_PI 3.14159265358979323846
 
-struct Point3
+struct MYLIB_IMPORT Point3
 {
     double x = 0.0, y = 0.0, z = 0.0;
 };
 
-class Curve3D
+class MYLIB_IMPORT Curve3D
 {
 public:
     virtual Point3 getCartesianAt(double parameter) const = 0;
@@ -41,7 +53,7 @@ protected:
 };
 
 
-class Elipse : public Curve3D
+class MYLIB_IMPORT Elipse : public Curve3D
 {
 public:
     Elipse();
@@ -62,7 +74,7 @@ private:
 };
 
 
-class Circle : public Curve3D
+class MYLIB_IMPORT Circle : public Curve3D
 {
 public:
     Circle();
@@ -80,7 +92,7 @@ private:
 };
 
 
-class Helix : public Curve3D
+class MYLIB_IMPORT Helix : public Curve3D
 {
 public:
     Helix();

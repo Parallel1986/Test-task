@@ -17,7 +17,10 @@ Circle::Circle()
 Circle::Circle(Point3 center, double radius) : Circle()
 {
     this->center = center;
-    this->radius = radius;
+    if (radius < 0)
+        this->radius = -1*radius;
+    else
+        this->radius = radius;
 }
 
 double Circle::getRadius() const

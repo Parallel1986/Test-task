@@ -18,8 +18,15 @@ Elipse::Elipse()
 Elipse::Elipse(Point3 center, double radius_a, double radius_b) : Elipse()
 {
     this->center = center;
-    this->radius_a = radius_a;
-    this->radius_b = radius_b;
+    if (radius_a < 0)
+        this->radius_a = -1*radius_a;
+    else
+        this->radius_a = radius_a;
+
+    if (radius_b < 0)
+        this->radius_b = -1*radius_b;
+    else
+        this->radius_b = radius_b;
 }
 
 double Elipse::getRadiusA() const
