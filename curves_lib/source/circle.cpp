@@ -43,9 +43,13 @@ Point3 Circle::getCartesianAt(double parameter) const
                    center.z});
 }
 
-Point3 Circle::getDerivateAt(double parameter) const
+Vector3 Circle::getDerivateAt(double parameter) const
 {
-    return Point3({x_derivation(parameter,radius),
-                   y_derivation(parameter,radius),
-                   0.0});
+    auto start = getCartesianAt(parameter);
+
+    auto end = Point3({start.x + x_function(parameter, radius),
+                       start.y + y_function(parameter, radius),
+                       0.0});
+
+    return Vector3({start,end});
 }

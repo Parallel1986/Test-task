@@ -22,11 +22,16 @@ struct MYLIB_IMPORT Point3
     double x = 0.0, y = 0.0, z = 0.0;
 };
 
+struct MYLIB_IMPORT Vector3
+{
+    Point3 start{0.0,0.0,0.0}, end{0.0,0.0,0.0};
+};
+
 class MYLIB_IMPORT Curve3D
 {
 public:
     virtual Point3 getCartesianAt(double parameter) const = 0;
-    virtual Point3 getDerivateAt(double parameter) const = 0;
+    virtual Vector3 getDerivateAt(double parameter) const = 0;
 
     Point3 getCenter() const;
 
@@ -60,7 +65,7 @@ public:
     Elipse(Point3 center, double radius_a, double radius_b);
 
     virtual Point3 getCartesianAt(double parameter) const override;
-    virtual Point3 getDerivateAt(double parameter) const override;
+    virtual Vector3 getDerivateAt(double parameter) const override;
 
     double getRadiusA() const;
     double getRadiusB() const;
@@ -81,7 +86,7 @@ public:
     Circle(Point3 center, double radius);
 
     virtual Point3 getCartesianAt(double parameter) const override;
-    virtual Point3 getDerivateAt(double parameter) const override;
+    virtual Vector3 getDerivateAt(double parameter) const override;
 
     double getRadius() const;
 
@@ -99,7 +104,7 @@ public:
     Helix(Point3 center, double radius, double step);
 
     virtual Point3 getCartesianAt(double parameter) const override;
-    virtual Point3 getDerivateAt(double parameter) const override;
+    virtual Vector3 getDerivateAt(double parameter) const override;
 
     double getRadius() const;
     double getStep() const;

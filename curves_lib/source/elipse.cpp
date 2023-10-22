@@ -56,9 +56,13 @@ Point3 Elipse::getCartesianAt(double parameter) const
                    center.z});
 }
 
-Point3 Elipse::getDerivateAt(double parameter) const
+Vector3 Elipse::getDerivateAt(double parameter) const
 {
-    return Point3({x_derivation(parameter,radius_a),
-                   y_derivation(parameter,radius_b),
-                   0.0});
+    auto start = getCartesianAt(parameter);
+
+    auto end = Point3({start.x + x_function(parameter, radius_a),
+                       start.y + y_function(parameter, radius_b),
+                       0.0});
+
+    return Vector3({start,end});
 }

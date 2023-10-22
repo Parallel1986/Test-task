@@ -1,5 +1,5 @@
 #include "include_lib/curves_3d.h"
-
+#include "omp.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -122,8 +122,35 @@ void printCurveInfo(const Curve3D* curve)
         auto point = curve->getCartesianAt(M_PI/4);
         std::printf("Point at PI/4 : \t(%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
 
-        point = curve->getDerivateAt(M_PI/4);
-        std::printf("Derivation at PI/4: (%.1f, %.1f, %.1f)\n", point.x, point.y, point.z);
+        auto vec = curve->getDerivateAt(M_PI/4);
+        std::printf("Derivation at PI/4: start (%.1f, %.1f, %.1f)\t"
+                    "end (%.1f, %.1f, %.1f)\n"
+                    ,vec.start.x, vec.start.y, vec.start.z
+                    ,vec.end.x,vec.end.y,vec.end.z);
+}
+
+void printVectorOfCircles(const std::vector<std::shared_ptr<Circle>>& circles)
+{
+    int count = 0;
+    for (auto& circle:circles)
+    {
+        std::printf("Circle #%d, radius = %.1f\n", count, circle->getRadius());
+        ++count;
+    }
+}
+
+void calculateTotalRadius(std::vector<std::shared_ptr<Circle>>& circles)
+{
+    double radii_sum = 0.0;
+
+    #pragma omp parallel for reduction(+:radii_sum)
+    {
+        for (auto& circle:circles)
+        {
+            radii_sum += circle->getRadius();
+        }
+    }
+    std::printf("\nTotal radii sum = %.1f\n", radii_sum);
 }
 
 int main()
@@ -150,28 +177,17 @@ int main()
         std::cout << std::endl;
     }
 
-    counter = 0;
-    std::cout << "Vector of circles:\n";
-    for (auto& circle:circles)
-    {
-        std::cout << "Circle #" << counter << " radius = " << circle->getRadius() << std::endl;
-        ++counter;
-    }
+    printVectorOfCircles(circles);
 
     std::sort(circles.begin(),circles.end(),[](std::shared_ptr<Circle> first, std::shared_ptr<Circle> second){
             return first->getRadius()<second->getRadius();
         });
 
     std::cout <<"\nSorted vector of circles:\n";
-    counter = 0;
-    double radii_sum = 0.0;
-    for (auto& circle:circles)
-    {
-        std::cout << "Circle #" << counter << " radius = " << circle->getRadius() << std::endl;
-        radii_sum += circle->getRadius();
-        ++counter;
-    }
-    std::cout << "\nTotal radii sum = " << radii_sum << std::endl;
+
+    printVectorOfCircles(circles);
+
+    calculateTotalRadius(circles);
 
     std::cin >> counter;
 }

@@ -52,9 +52,13 @@ Point3 Helix::getCartesianAt(double parameter) const
                    center.z + z_function(parameter, radius)});
 }
 
-Point3 Helix::getDerivateAt(double parameter) const
+Vector3 Helix::getDerivateAt(double parameter) const
 {
-    return Point3({x_derivation(parameter,radius),
-                   y_derivation(parameter,radius),
-                   z_derivation(parameter, step)});
+    auto start = getCartesianAt(parameter);
+
+    auto end = Point3({start.x + x_function(parameter, radius),
+                       start.y + y_function(parameter, radius),
+                       z_derivation(parameter, step)});
+
+    return Vector3({start,end});
 }
